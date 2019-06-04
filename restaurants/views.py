@@ -121,3 +121,10 @@ def signup(request):
     else:
         form = UserCreationForm()
     return render(request, 'signup.html', {'form': form})
+
+
+def restaurant_search(request):
+    query = request.GET["query"]
+    search_results = (Restaurant.objects.filter(name__icontains=query))
+    context = {"restaurants": search_results, "query": query}
+    return render(request, 'restaurants_list.html', context)

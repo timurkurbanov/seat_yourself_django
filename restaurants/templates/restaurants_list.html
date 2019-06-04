@@ -1,6 +1,18 @@
 {% extends 'base.html' %}
 {% block content %}
 <main class='restaurants_list'>
+    <section class="search">
+        <form action="{% url 'restaurant_search' %}" method="GET">
+            <label for="restaurant-search">
+              <span>Search:</span>
+              <input
+                type="search"
+                id="restaurant-search"
+                name="query"
+                value="{{ query }}"
+              />
+            </label>
+    </section>
     <section>
       <ul class="gallery">
         {% for restaurant in restaurants %}
