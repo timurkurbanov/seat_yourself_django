@@ -6,6 +6,7 @@ from django.forms import (CharField, DateField, DateInput,
      PasswordInput, Textarea, TimeField, TimeInput, URLField)
 from restaurants.models import Category, Profile, Reservation, Restaurant
 
+
 class ReservationForm(ModelForm):
     party_size = IntegerField()
     notes = CharField(required=False, widget=Textarea())
@@ -21,6 +22,7 @@ class ReservationForm(ModelForm):
         restaurant = self.instance.restaurant
         closing = restaurant.closing_time
         opening = restaurant.opening_time
+        final_reservation_threshold = timedelta(minutes=60)
 
         if restaurant.open_past_midnight():
             if closing < cleaned_time and cleaned_time < opening:
@@ -28,10 +30,20 @@ class ReservationForm(ModelForm):
         else:
             if cleaned_time < opening or closing < cleaned_time:
                 self.add_error('time', 'Restaurant not open at that time')
+        
+        # if cleaned_time > closing - final_reservation_threshold: 
+        #     self.add_error('time', 'Sorry, reservation must be done 60 minutes before closing time')
+
+        # if datetime(cleaned_time) > (datetime(closing)) - timedelta(minutes=30):
+        #     self.add_error('time', 'Sorry, reservation must be done 60 minutes before closing time')
+
+        if cleaned_time.hour >= closing.hour - 1:
+            self.add_error('time', 'Sorry, reservation must be done 60 minutes before closing time')
+
+
 
             
         
-
         return cleaned_time
 
     def clean_date(self):
@@ -63,6 +75,12 @@ class ReservationForm(ModelForm):
 
         if not restaurant.room_for(cleaned_date, cleaned_time, cleaned_party_size):
             self.add_error('time', 'Restaurant is booked at that time')
+
+        
+
+
+
+        
 
         return cleaned_data
 
