@@ -22,7 +22,7 @@
         {% endif %}
       {% endif %}
 
-      {% if reservations %}
+      {% if reservations and restaurant.owner != user %}
       <ol>
         {% for reservation in reservations %}
         <li>
@@ -42,4 +42,16 @@
       </form>
     {% endif %}
 </main>
+
+<ul>
+
+<li>
+    <p>{{restaurant.address}}</p>
+    <p>{{restaurant.phone}}</p>
+    <p>{{restaurant.description}}</p>
+    <img src="{{restaurant.image}}" alt="{{ restaurant.name }}">
+    <p>{{restaurant.opening_time}}</p>
+    <p>{{restaurant.closing_time}}</p>    
+</li>
+</ul>
 {% endblock %}

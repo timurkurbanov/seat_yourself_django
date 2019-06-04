@@ -29,6 +29,9 @@ class ReservationForm(ModelForm):
             if cleaned_time < opening or closing < cleaned_time:
                 self.add_error('time', 'Restaurant not open at that time')
 
+            
+        
+
         return cleaned_time
 
     def clean_date(self):

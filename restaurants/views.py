@@ -21,7 +21,8 @@ def restaurant_show(request, id):
 
 @login_required
 def restaurant_edit(request, id):
-    restaurant = Restaurant.objects.get(pk=id)
+    restaurant = get_object_or_404(Restaurant, pk=id, owner=request.user)
+    # restaurant = Restaurant.objects.get(pk=id)
     if request.method == 'POST':
         form = RestaurantForm(request.POST, instance=restaurant)
         if form.is_valid():
