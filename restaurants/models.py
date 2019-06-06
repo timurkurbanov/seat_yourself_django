@@ -1,7 +1,7 @@
 from django.contrib.auth.models import User
 from django.db import models
 from django.db.models import Sum
-# from datetime import timedelta
+from datetime import timedelta
 
 class Profile(models.Model):
     first_name = models.CharField(max_length=255)
@@ -22,7 +22,7 @@ class Profile(models.Model):
 
     def fave_restaurants():
         fave_list = []
-        six_months = datetime.now()-timedelta(days=180)
+        six_months = datetime.now() - timedelta(days=180)
 
         for reservation in self.reservations.all():
             restaurant = reservation.restaurant
@@ -78,26 +78,22 @@ class Restaurant(models.Model):
 
     def get_vip(self):
         vip = []
+        all_reservations = self.reservations.all()
         # six_months = datetime.now()-timedelta(days=180)
 
-
+        # Is this loop running?
         for reservation in self.reservations.all():
             customer = reservation.user
-            six_months = datetime.now()-timedelta(days=180)
+            six_months = datetime.now() - timedelta(days=180)
             customer_visits = self.reservations.filter(user=customer).count()
-            recent_customer_visits = self.reservations.filter(user=user and date>=six_months).count()
-            if customer_visits >= 2:
+            recent_customer_visits = self.reservations.filter(user=customer and date>=six_months.date).count()
+
+            # DeMorgan's Law: Boolean Equivalancies
+            # Does this condition add to the list we're expecting?
+            if (customer_visits >= 1) or (recent_customer_visits >= 3):
                 vip.append(customer)
-            elif recent_customer_visits >= 3:
-                fave_list.append(restaurant)
 
-        if len(vip) <= 0:
-            return None
-        else:
-            return set(vip)
-
-
-
+        return set(vip)
         
 
 class Reservation(models.Model):

@@ -5,15 +5,19 @@
     {% if user.is_authenticated %}
       {% if restaurant.owner == user %}
       <p> <a href="{% url 'restaurant_edit' id=restaurant.pk %}">Edit restaurant details</a> </p>
+
         {% if restaurant.reservations.exists %}
+          <p>Reservations exist</p>
           <ol>
             {% for reservation in restaurant.reservations.all %}
-              <li>
+              <li style="border: 1px solid black; border-radius:9px; padding: 5px">
                 <p> <time datetime="{{ reservation.date_and_time }}">{{ reservation.date }} at {{ reservation.time }} </time> </p>
+
                 {% if reservation.user in restaurant.get_vip %}
                   <p>VIP!!!⭐️</p>
                 {% endif %}
-                <p> {{ reservation.user.first_name }}, party of {{ reservation.party_size }} </p>
+
+                <p><em>{{ reservation.user.first_name }},</em> party of {{ reservation.party_size }} </p>
                 {% if reservation.notes %}
                   <p class='notes'>{{ reservation.notes }}</p>
                 {% endif %}
