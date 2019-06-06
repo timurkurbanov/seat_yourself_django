@@ -10,7 +10,10 @@
             {% for reservation in restaurant.reservations.all %}
               <li>
                 <p> <time datetime="{{ reservation.date_and_time }}">{{ reservation.date }} at {{ reservation.time }} </time> </p>
-                <p> {{ reservation.user.profile.last_name }}, party of {{ reservation.party_size }} </p>
+                {% if reservation.user in restaurant.get_vip %}
+                  <p>VIP!!!⭐️</p>
+                {% endif %}
+                <p> {{ reservation.user.first_name }}, party of {{ reservation.party_size }} </p>
                 {% if reservation.notes %}
                   <p class='notes'>{{ reservation.notes }}</p>
                 {% endif %}
@@ -35,6 +38,12 @@
         {% endfor %}
       </ol>
       {% endif %}
+      <p>Total Number of Reservations: {{restaurant.reservations.count}}</p>
+      
+
+
+
+
       <form method='POST' action="{% url 'reservation_create' restaurant_id=restaurant.pk%}">
         {% csrf_token %}
         {{ reservation_form.as_p }}

@@ -1,6 +1,7 @@
 from django.contrib.auth.models import User
 from django.db import models
 from django.db.models import Sum
+# from datetime import timedelta
 
 class Profile(models.Model):
     first_name = models.CharField(max_length=255)
@@ -19,6 +20,25 @@ class Profile(models.Model):
     def exists_for_user(self, user):
         return Profile.objects.filter(user_id=user.id).exists()
 
+    def fave_restaurants():
+        fave_list = []
+        six_months = datetime.now()-timedelta(days=180)
+
+        for reservation in self.reservations.all():
+            restaurant = reservation.restaurant
+            six_months = datetime.now()-timedelta(days=180)
+            visits = self.reservations.filter(restaurant=restaurant).count()
+            recent_visits = self.reservations.filter(restaurant=restaurant and date>=six_months).count()
+
+            if visits >= 555:
+                fave_list.append(restaurant)
+            elif recent_visits >= 3:
+                fave_list.append(restaurant)
+
+        if len(fave_list) <= 0:
+            return None
+        else:
+            return set(fave_list)
 
 class Category(models.Model):
     name = models.CharField(max_length=255)
@@ -55,6 +75,30 @@ class Restaurant(models.Model):
         reserved_seats = self.reservations.filter(date=date, time=time).aggregate(Sum('party_size'))
         reserved_seats = reserved_seats['party_size__sum'] or 0
         return (reserved_seats + number_of_people) <= self.capacity
+
+    def get_vip(self):
+        vip = []
+        # six_months = datetime.now()-timedelta(days=180)
+
+
+        for reservation in self.reservations.all():
+            customer = reservation.user
+            six_months = datetime.now()-timedelta(days=180)
+            customer_visits = self.reservations.filter(user=customer).count()
+            recent_customer_visits = self.reservations.filter(user=user and date>=six_months).count()
+            if customer_visits >= 2:
+                vip.append(customer)
+            elif recent_customer_visits >= 3:
+                fave_list.append(restaurant)
+
+        if len(vip) <= 0:
+            return None
+        else:
+            return set(vip)
+
+
+
+        
 
 class Reservation(models.Model):
     user = models.ForeignKey(User, related_name='reservations_made', on_delete=models.CASCADE)
